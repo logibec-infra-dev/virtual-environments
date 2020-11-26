@@ -50,6 +50,7 @@
             "virtual_network_subnet_name": "{{user `virtual_network_subnet_name`}}",
             "private_virtual_network_with_public_ip": "{{user `private_virtual_network_with_public_ip`}}",
             "os_type": "Windows",
+            "os_disk_size_gb": "256",
             "image_publisher": "MicrosoftWindowsServer",
             "image_offer": "WindowsServer",
             "image_sku": "2016-Datacenter",
