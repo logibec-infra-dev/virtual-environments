@@ -23,10 +23,6 @@
         "github_feed_token": null,
         "run_validation_diskspace": "false"
     },
-    "sensitive-variables": [
-        "client_secret",
-        "github_feed_token"
-    ],
     "builders": [
         {
             "type": "azure-arm",
