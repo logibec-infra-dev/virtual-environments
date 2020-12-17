@@ -156,8 +156,20 @@ Describe "Common utilities" {
         "jq --version" | Should -ReturnZeroExitCode
     }
 
-    It "OpenSSL" {
-        "openssl version" | Should -ReturnZeroExitCode
+    Context "OpenSSL" {
+        It "OpenSSL is available" {
+            "openssl version" | Should -ReturnZeroExitCode
+        }
+
+        It "OpenSSL 1.1 path exists" {
+            $openSSLpath = "/usr/local/opt/openssl@1.1"
+            $openSSLpath | Should -Exist
+        }
+
+        It "Default OpenSSL version is 1.1" {
+            $commandResult = Get-CommandResult "openssl version"
+            $commandResult.Output | Should -Match "OpenSSL 1.1"
+        }
     }
 
     It "GnuPG" {
@@ -236,37 +248,9 @@ Describe "Common utilities" {
     It "Apache Ant" {
         "ant -version" | Should -ReturnZeroExitCode
     }
-}
 
-Describe "Browsers" {
-    It "Chrome" {
-        $chromeLocation = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-        $chromeLocation | Should -Exist
-        "'$chromeLocation' --version" | Should -ReturnZeroExitCode
-    }
-
-    It "Chrome Driver" {
-        "chromedriver --version" | Should -ReturnZeroExitCode
-    }
-
-    It "Microsoft Edge" {
-        $edgeLocation = "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
-        $edgeLocation | Should -Exist
-        "'$edgeLocation' --version" | Should -ReturnZeroExitCode
-    }
-
-    It "Microsoft Edge Driver" {
-        "msedgedriver --version" | Should -ReturnZeroExitCode
-    }
-
-    It "Firefox" {
-        $firefoxLocation = "/Applications/Firefox.app/Contents/MacOS/firefox"
-        $firefoxLocation | Should -Exist
-        "'$firefoxLocation' --version" | Should -ReturnZeroExitCode
-    }
-
-    It "Geckodriver" {
-        "geckodriver --version" | Should -ReturnZeroExitCode
+    It "GNU Tar" {
+        "gtar --version" | Should -ReturnZeroExitCode
     }
 }
 
@@ -327,7 +311,7 @@ Describe "Clang/LLVM" -Skip:($os.IsHighSierra) {
 }
 
 Describe "Gcc" -Skip:($os.IsHighSierra) {
-    $testCases = @("8", "9") | ForEach-Object { @{GccVersion = $_} }
+    $testCases = @("8", "9", "10") | ForEach-Object { @{GccVersion = $_} }
 
     It "Gcc <GccVersion>" -TestCases $testCases {
         param (
@@ -339,7 +323,7 @@ Describe "Gcc" -Skip:($os.IsHighSierra) {
 }
 
 Describe "Gfortran" -Skip:($os.IsHighSierra) {
-    $testCases = @("8", "9") | ForEach-Object { @{GfortranVersion = $_} }
+    $testCases = @("8", "9", "10") | ForEach-Object { @{GfortranVersion = $_} }
 
     It "Gfortran <GfortranVersion>" -TestCases $testCases {
         param (
@@ -347,6 +331,10 @@ Describe "Gfortran" -Skip:($os.IsHighSierra) {
         )
 
         "gfortran-$GfortranVersion --version" | Should -ReturnZeroExitCode
+    }
+
+    It "Gfortran is not found in the default path" {
+        "$(which gfortran)" | Should -BeNullOrEmpty
     }
 }
 

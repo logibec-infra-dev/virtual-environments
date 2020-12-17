@@ -54,6 +54,7 @@ if ($os.IsLessThanBigSur) {
 }
 
 $markdown += New-MDList -Style Unordered -Lines @(
+    (Get-BashVersion),
     "Node.js ${nodejsVersion}"
     "NVM ${nvmVersion}"
     "NVM - Cached node versions: ${nvmCachedVersions}"
@@ -139,6 +140,8 @@ $helmVersion = Run-Command "helm version --short"
 $mongo = Run-Command "mongo --version" | Select-String "MongoDB shell version" | Take-Part -Part 3
 $mongod = Run-Command "mongod --version" | Select-String "db version " | Take-Part -Part 2
 $p7zip = Run-Command "7z i" | Select-String "7-Zip" | Take-Part -Part 0,2
+$gnuTar = Run-Command "gtar --version" | Select-String "tar" | Take-Part -Part 3
+$bsdtar = Run-Command "tar --version" | Take-Part -Part 1
 
 $markdown += New-MDHeader "Utilities" -Level 3
 $markdown += New-MDList -Style Unordered -NoNewLine -Lines @(
@@ -163,7 +166,9 @@ $markdown += New-MDList -Style Unordered -NoNewLine -Lines @(
     "helm $helmVersion",
     "mongo $mongo",
     "mongod $mongod",
-    $p7zip
+    $p7zip,
+    "bsdtar $bsdtar - available by 'tar' alias",
+    "GNU Tar $gnuTar - available by 'gtar' alias"
 )
 if ($os.IsHigherThanMojave) {
     $newmanVersion = Run-Command "newman --version"
@@ -194,6 +199,7 @@ $ghcUpVersion = Run-Command "ghcup --version" | Take-Part -Part 5
 $ghcVersion = Run-Command "ghc --version" | Take-Part -Part 7
 $cabalVersion = Run-Command "cabal --version" | Take-Part -Part 3
 $stackVersion = Run-Command "stack --version" | Take-Part -Part 1 | ForEach-Object {$_.replace(",","")}
+$xcodeVersion = Run-Command "pkgutil --pkg-info com.apple.pkg.CLTools_Executables" | Select -Index 1 | Take-Part -Part 1
 
 $markdown += New-MDHeader "Tools" -Level 3
 $markdown += New-MDList -Style Unordered -NoNewLine -Lines @(
@@ -204,7 +210,8 @@ $markdown += New-MDList -Style Unordered -NoNewLine -Lines @(
     "AWS CLI ${awsVersion}",
     "AWS SAM CLI ${awsSamVersion}",
     "AWS Session Manager CLI ${awsSessionManagerVersion}",
-    "Aliyun CLI ${aliyunVersion}"
+    "Aliyun CLI ${aliyunVersion}",
+    "Xcode Command Line Tools ${xcodeVersion}"
 )
 
 if( -not $os.IsHighSierra) {

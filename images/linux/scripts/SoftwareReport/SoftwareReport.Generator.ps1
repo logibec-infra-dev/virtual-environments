@@ -11,7 +11,8 @@ Import-Module (Join-Path $PSScriptRoot "SoftwareReport.Browsers.psm1") -DisableN
 Import-Module (Join-Path $PSScriptRoot "SoftwareReport.CachedTools.psm1") -DisableNameChecking
 Import-Module (Join-Path $PSScriptRoot "SoftwareReport.Common.psm1") -DisableNameChecking
 Import-Module (Join-Path $PSScriptRoot "SoftwareReport.Databases.psm1") -DisableNameChecking
-Import-Module (Join-Path $PSScriptRoot "SoftwareReport.Helpers.psm1") -DisableNameChecking
+Import-Module "$PSScriptRoot/../helpers/SoftwareReport.Helpers.psm1" -DisableNameChecking
+Import-Module "$PSScriptRoot/../helpers/Common.Helpers.psm1" -DisableNameChecking
 Import-Module (Join-Path $PSScriptRoot "SoftwareReport.Java.psm1") -DisableNameChecking
 Import-Module (Join-Path $PSScriptRoot "SoftwareReport.Rust.psm1") -DisableNameChecking
 Import-Module (Join-Path $PSScriptRoot "SoftwareReport.Tools.psm1") -DisableNameChecking
@@ -32,15 +33,16 @@ $markdown += New-MDHeader "Installed Software" -Level 2
 $markdown += New-MDHeader "Language and Runtime" -Level 3
 
 $markdown += New-MDList -Style Unordered -Lines @(
+        (Get-BashVersion),
         (Get-CPPVersions),
         (Get-FortranVersions),
         (Get-ClangVersions),
         (Get-ErlangVersion),
         (Get-MonoVersion),
         (Get-NodeVersion),
+        (Get-PerlVersion),
         (Get-PythonVersion),
         (Get-Python3Version),
-        (Get-PowershellVersion),
         (Get-RubyVersion),
         (Get-SwiftVersion),
         (Get-JuliaVersion)
@@ -103,6 +105,7 @@ $toolsList = @(
     (Get-KubectlVersion),
     (Get-KustomizeVersion),
     (Get-LeiningenVersion),
+    (Get-MediainfoVersion),
     (Get-M4Version),
     (Get-HGVersion),
     (Get-MinikubeVersion),
@@ -212,6 +215,13 @@ $markdown += Build-MSSQLToolsSection
 
 $markdown += New-MDHeader "Cached Tools" -Level 3
 $markdown += Build-CachedToolsSection
+
+$markdown += New-MDHeader "PowerShell Tools" -Level 3
+$markdown += New-MDList -Lines (Get-PowershellVersion) -Style Unordered
+
+$markdown += New-MDHeader "PowerShell Modules" -Level 4
+$markdown += Get-PowerShellModules | New-MDTable
+$markdown += New-MDNewLine
 
 $markdown += New-MDHeader "Android" -Level 3
 $markdown += Build-AndroidTable | New-MDTable
